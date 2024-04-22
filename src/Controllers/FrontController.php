@@ -1,21 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Controllers;
-use Core\Controllers\Contract\ControllerInterface;
+use Core\Contracts\ControllerInterface;
 use Core\Controllers\LayoutController;
-class FrontController  extends LayoutController implements ControllerInterface {
+use Core\Services\AuthMiddleware;
+// use Core\Controllers\RequestController;
+use MessageFormatter;
+class FrontController  extends LayoutController {
     public function init(){
 
     }
     public static function uriHook(string $data = ''): string {
+        $Uri = $_SERVER['REQUEST_URI'];
+        //$RequestController = new RequestController();
 
-        echo self::head(); #porque es static function
+        if ($Uri == '/php-estructuras/') {
+            
+            return (string) include './template/Pages/Home/Home.php';
 
-        if($_SERVER['REQUEST_URI'] == '/php-estructuras/test/') {
-            return '<h1>Welcome</h1>';
-        } else {
-            return '<h1>Welcome Again</h1>';
+        } elseif ($Uri == '/php-estructuras/login/' || $Uri == '/php-estructuras/login') {
+
+            return (string) include './template/Pages/Login/Login.php';    
+
+        } elseif ($Uri == '/php-estructuras/backoffice/' || $Uri == '/php-estructuras/backoffice') {
+            $Middleware = new AuthMiddleware();
+            $Middleware->validateSession();
+
+            return (string) include './template/Pages/Backoffice/Backoffice.php';
+            //$Middleware = new AuthMiddleware();
+            //$Middleware->validateSession();
         }
+
+        return (string) include './template/Layout/NotFound.php';
+       
     }
 }
 

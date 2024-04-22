@@ -1,0 +1,1 @@
+#entidades y clases que hacen logica muy legada al negocio /producto/app
